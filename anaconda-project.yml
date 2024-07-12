@@ -1,0 +1,17 @@
+name: gh_discord_proxy
+description: Flask proxy to filter and format Github webhook events and forward them to the HoloViz Discord.
+commands:
+  default:
+    unix: "waitress-serve --host {{address}} --port {{port}} app:app"
+  local:
+    unix: "waitress-serve app:app"
+packages:
+  - python=3.12
+  - flask
+  - requests
+  - waitress
+platforms:
+  - linux-64
+  - osx-64
+  - osx-arm64
+  - win-64

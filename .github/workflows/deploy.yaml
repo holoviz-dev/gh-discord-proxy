@@ -1,0 +1,40 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy_ae5:
+    name: Deploy on AE5
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniconda-version: "latest"
+          auto-update-conda: true
+      - name: Install dependencies
+        run: |
+          conda activate test
+          conda install -c ae5-admin anaconda-project ae5-tools pyyaml
+      - name: Inject env vars
+        run: |
+          conda activate test
+          python inject_env_vars.py
+      - name: Upload and deploy
+        run: |
+          conda activate test
+          ae5 login --hostname holoviz-demo.anaconda.com --username ${{ secrets.AE5_USERNAME }} --password ${{ secrets.AE5_PASSWORD }}
+          ae5 deployment stop gh_discord_proxy --yes || :
+          ae5 project delete gh_discord_proxy --yes || :
+          ae5 project upload . --name gh_discord_proxy --tag '0.0.1'
+          ae5 deployment start gh_discord_proxy --endpoint gh-discord-proxy --command default --public --resource-profile default --wait
