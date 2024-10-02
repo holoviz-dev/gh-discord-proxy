@@ -18,11 +18,14 @@ variables = {}
 for env_var in ENV_VARS:
     val = os.getenv(env_var)
     if val:
+        print(f"Injecting variable {env_var}")
         variables[env_var] = val
     else:
         raise LookupError(f"Missing env var {env_var}")
 
-spec['VARIABLES'] = variables
+spec['variables'] = variables
 
-with open('data.yaml', 'w') as f:
+print("Overriding anaconda-project file.")
+
+with open(PROJECT, 'w') as f:
     dump(spec, f)
