@@ -27,6 +27,8 @@ jobs:
           conda activate test
           conda install -c ae5-admin anaconda-project ae5-tools pyyaml
       - name: Inject env vars
+        env:
+          HOLOVIZ_DISCORD_TAGONLY_WEBHOOK: ${{ secrets.HOLOVIZ_DISCORD_TAGONLY_WEBHOOK }}
         run: |
           conda activate test
           python inject_env_vars.py

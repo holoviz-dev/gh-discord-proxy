@@ -19,6 +19,8 @@ for env_var in ENV_VARS:
     val = os.getenv(env_var)
     if val:
         variables[env_var] = val
+    else:
+        raise LookupError(f"Missing env var {env_var}")
 
 spec['VARIABLES'] = variables
 
