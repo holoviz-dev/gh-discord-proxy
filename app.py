@@ -20,6 +20,11 @@ def root():
     return 'Up and running'
 
 
+@app.get('/health')
+def health_check():
+    return  jsonify({"status": "ok"}), 200
+
+
 @app.post('/tagonly')
 def tagonly():
     gh_event = request.headers.get('X-GitHub-Event')
